@@ -1,5 +1,6 @@
 'use strict';
 
+const assert = require('proclaim');
 const express = require('express');
 const fixtures = require('./fixture/requests');
 const request = require('request-promise-native');
@@ -10,7 +11,7 @@ describe('Express middleware', () => {
 	let server;
 	let endpoint;
 
-	beforeAll(done => {
+	before(done => {
 		app = express();
 		app.use(rpc.express());
 		server = app.listen(undefined, () => {
@@ -19,7 +20,7 @@ describe('Express middleware', () => {
 		});
 	});
 
-	afterAll(() => {
+	after(() => {
 		server.close();
 	});
 
@@ -34,8 +35,8 @@ describe('Express middleware', () => {
 				body: fixture.requestData,
 				resolveWithFullResponse: true
 			});
-			expect(response.statusCode).toStrictEqual(fixture.expectedResponseStatus);
-			expect(JSON.parse(response.body)).toEqual(JSON.parse(fixture.expectedResponseData));
+			assert.strictEqual(response.statusCode, fixture.expectedResponseStatus);
+			assert.deepEqual(JSON.parse(response.body), JSON.parse(fixture.expectedResponseData));
 		});
 	}
 

@@ -1,5 +1,6 @@
 'use strict';
 
+const assert = require('proclaim');
 const fixtures = require('./fixture/requests');
 const Koa = require('koa');
 const request = require('request-promise-native');
@@ -10,7 +11,7 @@ describe('Koa middleware', () => {
 	let server;
 	let endpoint;
 
-	beforeAll(done => {
+	before(done => {
 		app = new Koa();
 		app.use(rpc.koa());
 		server = app.listen(undefined, () => {
@@ -19,7 +20,7 @@ describe('Koa middleware', () => {
 		});
 	});
 
-	afterAll(() => {
+	after(() => {
 		server.close();
 	});
 
@@ -34,8 +35,8 @@ describe('Koa middleware', () => {
 				body: fixture.requestData,
 				resolveWithFullResponse: true
 			});
-			expect(response.statusCode).toStrictEqual(fixture.expectedResponseStatus);
-			expect(JSON.parse(response.body)).toEqual(JSON.parse(fixture.expectedResponseData));
+			assert.strictEqual(response.statusCode, fixture.expectedResponseStatus);
+			assert.deepEqual(JSON.parse(response.body), JSON.parse(fixture.expectedResponseData));
 		});
 	}
 
